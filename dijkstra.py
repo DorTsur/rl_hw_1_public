@@ -17,6 +17,10 @@ def dijkstra(puzzle):
     initial = puzzle.start_state
     goal = puzzle.goal_state
 
+    ##########
+    # MAKE SURE INITIAL != GOAL
+    ##########
+
     # the fringe is the queue to pop items from
     fringe = [(0, initial)]
     # concluded contains states that were already resolved
@@ -27,10 +31,49 @@ def dijkstra(puzzle):
     # that achieves the minimal distance to the starting state of puzzle.
     prev = {initial.to_string(): None}
 
+    if initial == goal:
+        return prev
+
     while len(fringe) > 0:
-        # remove the following line and complete the algorithm
-        assert False
+        # stopping condition - when we reach the goal state
+        _, current_state = heapq.heappop(fringe)
+        possible_actions = current_state.get_actions()
+
+
+        for action in possible_actions:
+            new_state = current_state.apply_action(action)
+            if new_state == goal:
+                distances[new_state.to_string()] = new_state.get_manhattan_distance(current_state) + distances[current_state.to_string()]
+                prev[new_state.to_string()] = current_state
+                return prev
+            if new_state.to_string() not in distances.keys():
+                distances[new_state.to_string()] = 10**10
+            if new_state.to_string() in concluded:
+                continue
+            d = new_state.get_manhattan_distance(current_state) + distances[current_state.to_string()]
+            if d < distances[new_state.to_string()]:
+                distances[new_state.to_string()] = d
+                prev[new_state.to_string()] = current_state
+                heapq.heappush(fringe, (d, new_state))
+                print("d = {}".format(d))
+
+
+        fringe = ignore_duplicates(fringe)
+        concluded.add(current_state.to_string())
+
+        # assert False
     return prev
+
+def ignore_duplicates(q):
+    ignore = set()
+    q_new = []
+    # this is how we ignore items:
+    while len(q) > 0:
+        current_priority, current_item = heapq.heappop(q)
+        if current_item.to_string() not in ignore:
+            ignore.add(current_item.to_string())
+            heapq.heappush(q_new, (current_priority, current_item))
+    return q_new
 
 
 def solve(puzzle):
@@ -50,6 +93,7 @@ if __name__ == '__main__':
         'r', 'r', 'd', 'l', 'u', 'l', 'd', 'd', 'r', 'r', 'u', 'l', 'd', 'r', 'u', 'u', 'l', 'd', 'l', 'd', 'r', 'r',
         'u', 'l', 'u'
     ]
+    # actions = ['r', 'r', 'd', 'l', 'u', 'l', 'd', 'd', 'r', 'r', 'u', 'l', 'd', 'r']
     goal_state = initial_state
     for a in actions:
         goal_state = goal_state.apply_action(a)
