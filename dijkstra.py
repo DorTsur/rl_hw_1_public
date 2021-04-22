@@ -17,10 +17,6 @@ def dijkstra(puzzle):
     initial = puzzle.start_state
     goal = puzzle.goal_state
 
-    ##########
-    # MAKE SURE INITIAL != GOAL
-    ##########
-
     # the fringe is the queue to pop items from
     fringe = [(0, initial)]
     # concluded contains states that were already resolved
@@ -30,6 +26,7 @@ def dijkstra(puzzle):
     # the return value of the algorithm, a mapping from a state (as a string) to the state leading to it (NOT as string)
     # that achieves the minimal distance to the starting state of puzzle.
     prev = {initial.to_string(): None}
+    ignore = set()
 
     if initial == goal:
         return prev
@@ -39,26 +36,32 @@ def dijkstra(puzzle):
         _, current_state = heapq.heappop(fringe)
         possible_actions = current_state.get_actions()
 
-
         for action in possible_actions:
             new_state = current_state.apply_action(action)
             if new_state == goal:
-                distances[new_state.to_string()] = new_state.get_manhattan_distance(current_state) + distances[current_state.to_string()]
+                distances[new_state.to_string()] = 1 + distances[current_state.to_string()]
                 prev[new_state.to_string()] = current_state
                 return prev
-            if new_state.to_string() not in distances.keys():
-                distances[new_state.to_string()] = 10**10
-            if new_state.to_string() in concluded:
+            ###
+            if new_state.to_string() in concluded or new_state.to_string() in ignore:
                 continue
-            d = new_state.get_manhattan_distance(current_state) + distances[current_state.to_string()]
+            ###
+            # if new_state.to_string() in concluded:
+            #     continue
+            if new_state.to_string() not in distances.keys():
+                distances[new_state.to_string()] = float('inf')
+            # d = new_state.get_manhattan_distance(current_state) + distances[current_state.to_string()]
+            d = 1 + distances[current_state.to_string()]
             if d < distances[new_state.to_string()]:
                 distances[new_state.to_string()] = d
                 prev[new_state.to_string()] = current_state
                 heapq.heappush(fringe, (d, new_state))
-                print("d = {}".format(d))
+                # print("d = {}".format(d))
+                ###
+                ignore.add(new_state.to_string())
+                ###
 
-
-        fringe = ignore_duplicates(fringe)
+        # fringe = ignore_duplicates(fringe)
         concluded.add(current_state.to_string())
 
         # assert False
@@ -90,7 +93,9 @@ if __name__ == '__main__':
     # length 19 exists (make sure your plan is of the same length)
     initial_state = State()
     actions = [
-        'r', 'r', 'd', 'l', 'u', 'l', 'd', 'd', 'r', 'r', 'u', 'l', 'd', 'r', 'u', 'u', 'l', 'd', 'l', 'd', 'r', 'r',
+        'r', 'r', 'd', 'l', 'u', 'l',
+        'd','u','d','u',
+        'd', 'd', 'r', 'r', 'u', 'l', 'd', 'r', 'u', 'u', 'l', 'd', 'l', 'd', 'r', 'r',
         'u', 'l', 'u'
     ]
     # actions = ['r', 'r', 'd', 'l', 'u', 'l', 'd', 'd', 'r', 'r', 'u', 'l', 'd', 'r']
