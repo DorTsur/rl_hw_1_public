@@ -14,7 +14,19 @@ def get_A(cart_pole_env):
     pole_length = cart_pole_env.length
     dt = cart_pole_env.tau
 
-    return np.matrix([[0]])
+    A = np.zeros((4,4))
+    A[0,1] = 1
+    A[1,2] = pole_mass/cart_mass*g
+    A[2,3] = 1
+    A[3,2] = g/pole_length*(1+pole_mass/cart_mass)
+
+
+
+    A = np.eye(4) + dt*A
+
+
+    return A
+    # return np.matrix([[0]])
 
 
 def get_B(cart_pole_env):
@@ -29,7 +41,15 @@ def get_B(cart_pole_env):
     pole_length = cart_pole_env.length
     dt = cart_pole_env.tau
 
-    return np.matrix([[0]])
+    B = np.zeros((4, 1))
+
+    B[1] = 1 / cart_mass
+    B[3] = 1 / (cart_mass * pole_length)
+
+    B = B * dt
+
+    return B
+    # return np.matrix([[0]])
 
 
 def find_lqr_control_input(cart_pole_env):
@@ -47,14 +67,30 @@ def find_lqr_control_input(cart_pole_env):
     B = get_B(cart_pole_env)
 
     # TODO - Q and R should not be zero, find values that work, hint: all the values can be <= 1.0
+    # Our Q:
+    w_1 = 1
+    w_2 = 1
     Q = np.matrix([
+        [w_1, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
+        [0, 0, w_2, 0],
         [0, 0, 0, 0]
     ])
 
-    R = np.matrix([0])
+    # Their initial Q
+    # Q = np.matrix([
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0]
+    # ])
+
+    # Our R:
+    w_3 = 1
+    R = np.matrix([w_3])
+
+    # Their R:
+    # R = np.matrix([0])
 
     # TODO - you need to compute these matrices in your solution, but these are not returned.
     Ps = []
