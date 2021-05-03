@@ -21,7 +21,8 @@ class CartPoleContEnv(gym.Env):
         self.planning_steps = 600
 
         # Angle at which to fail the episode
-        self.theta_threshold_radians = np.pi / 8.0
+        # self.theta_threshold_radians = np.pi / 8.0  #the given threshold
+        self.theta_threshold_radians = np.pi / 10.0  # the requested threshold
         self.x_threshold = 2.4
 
         # Angle limit set to 2 * theta_threshold_radians so failing observation is still within bounds
@@ -32,7 +33,8 @@ class CartPoleContEnv(gym.Env):
             np.finfo(np.float32).max])
 
         self.observation_space = spaces.Box(-high, high, dtype=np.float32)
-        high = np.array([100.0])
+        # high = np.array([100.0])
+        high = np.array([4.0])  # for section 5
         self.action_space = spaces.Box(-high, high, dtype=np.float32)
 
         self.seed()
