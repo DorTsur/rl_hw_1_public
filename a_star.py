@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 ############################
 #     Bashar Huleihel
-#        Dor Tsur
+#        Dor Tsur.
 ############################
 
 def a_star(puzzle):

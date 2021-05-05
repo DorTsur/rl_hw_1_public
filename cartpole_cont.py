@@ -5,6 +5,11 @@ from gym.utils import seeding
 import numpy as np
 # from gym.envs.classic_control import rendering
 
+############################
+#     Bashar Huleihel
+#        Dor Tsur.
+############################
+
 class CartPoleContEnv(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],

@@ -4,7 +4,7 @@ from cartpole_cont import CartPoleContEnv
 
 ############################
 #     Bashar Huleihel
-#        Dor Tsur
+#        Dor Tsur.
 ############################
 
 def get_A(cart_pole_env):

@@ -5,7 +5,7 @@ import datetime
 
 ############################
 #     Bashar Huleihel
-#        Dor Tsur
+#        Dor Tsur.
 ############################
 
 def dijkstra(puzzle):
